@@ -1,6 +1,6 @@
 **GOplants**
 
-user can document the growth of his plants :3
+user can document the growth of his plants :33
 
 endpoints:
 CRUD plant
