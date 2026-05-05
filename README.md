@@ -21,21 +21,22 @@ PLANTS
 - name
 - nickname - null
 - died_at - null
+- created_at
 
 HEIGHTS
 - value
-- date
-- fk_plant
+- created_at
+- plant_id
 
 DISEASES
 - name
 - started_at
 - ended_at - null
-- fk_plant
+- plant_id
 
 FERTILIZERS
 - name
 - started_at
 - ended_at - null
-- fk_plant
+- plant_id
 
