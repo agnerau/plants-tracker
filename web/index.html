@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>GOplants 🌱</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        }
+
+        .plant-image {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            background: #ddd;
+        }
+
+        .plant-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .plant-nickname {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🌱 My Plants</h1>
+
+<div id="plants" class="grid"></div>
+
+<script>
+    fetch('/plants')
+        .then(res => res.json())
+        .then(plants => {
+            const container = document.getElementById('plants');
+
+            if (!plants.length) {
+                container.innerHTML = '<p class="empty">No plants yet 🌵</p>';
+                return;
+            }
+
+            plants.forEach(plant => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const image = document.createElement('img');
+                image.className = 'plant-image';
+                image.src = 'https://i.pinimg.com/736x/ed/4b/c6/ed4bc632495505f318ae7b39bd815fe3.jpg?text=Plant';
+
+                const name = document.createElement('div');
+                name.className = 'plant-name';
+                name.textContent = plant.name;
+
+                const nickname = document.createElement('div');
+                nickname.className = 'plant-nickname';
+                nickname.textContent = plant.nickname || '';
+
+                card.appendChild(image);
+                card.appendChild(name);
+                card.appendChild(nickname);
+
+                card.onclick = () => {
+                    window.location.href = `/plant.html?id=${plant.id}`;
+                };
+
+                container.appendChild(card);
+            });
+        })
+        .catch(err => {
+            document.getElementById('plants').innerHTML =
+                '<p class="empty">Failed to load plants 😢</p>';
+            console.error(err);
+        });
+</script>
+
+</body>
+</html>

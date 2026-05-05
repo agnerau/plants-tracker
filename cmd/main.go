@@ -20,5 +20,10 @@ func main() {
 	r.POST("/plants/:id/heights", heightHandler.CreateHeight)
 	r.GET("/plants/:id/heights", heightHandler.GetHeights)
 
+	r.Static("/static", "./web")
+	r.GET("/", func(c *gin.Context) {
+		c.File("./web/index.html")
+	})
+
 	r.Run(":8080")
 }
