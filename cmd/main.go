@@ -1,7 +1,7 @@
 package main
 
 import (
-	"goplants/internal"
+	"goplants/internal/app"
 	"goplants/internal/db"
 
 	"github.com/gin-gonic/gin"
@@ -10,14 +10,15 @@ import (
 func main() {
 	database := db.InitDB()
 
-	repo := &internal.PlantRepository{DB: database}
-	service := &internal.PlantService{Repo: repo}
-	handler := &internal.PlantHandler{Service: service}
+	plantHandler := app.InitPlantHandler(database)
+	heightHandler := app.InitHeightHandler(database)
 
 	r := gin.Default()
 
-	r.POST("/plants", handler.CreatePlant)
-	r.GET("/plants", handler.GetPlants)
+	r.POST("/plants", plantHandler.CreatePlant)
+	r.GET("/plants", plantHandler.GetPlants)
+	r.POST("/plants/:id/heights", heightHandler.CreateHeight)
+	r.GET("/plants/:id/heights", heightHandler.GetHeights)
 
 	r.Run(":8080")
 }
