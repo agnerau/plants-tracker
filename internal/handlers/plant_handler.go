@@ -1,17 +1,19 @@
-package internal
+package handlers
 
 import (
+	"goplants/internal"
+	"goplants/internal/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type PlantHandler struct {
-	Service *PlantService
+	Service *services.PlantService
 }
 
 func (h *PlantHandler) CreatePlant(c *gin.Context) {
-	var plant Plant
+	var plant internal.Plant
 
 	if err := c.ShouldBindJSON(&plant); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
