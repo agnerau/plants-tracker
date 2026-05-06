@@ -15,14 +15,18 @@ func main() {
 
 	r := gin.Default()
 
-	r.POST("/plants", plantHandler.CreatePlant)
-	r.GET("/plants", plantHandler.GetPlants)
-	r.POST("/plants/:id/heights", heightHandler.CreateHeight)
-	r.GET("/plants/:id/heights", heightHandler.GetHeights)
+	r.POST("api/plants", plantHandler.CreatePlant)
+	r.GET("api/plants", plantHandler.GetPlants)
+	r.GET("api/plants/:id", plantHandler.GetPlant)
+	r.POST("api/plants/:id/heights", heightHandler.CreateHeight)
+	r.GET("api/plants/:id/heights", heightHandler.GetHeights)
 
 	r.Static("/static", "./web")
 	r.GET("/", func(c *gin.Context) {
 		c.File("./web/index.html")
+	})
+	r.GET("/plants/:id", func(c *gin.Context) {
+		c.File("./web/plant.html")
 	})
 
 	r.Run(":8080")

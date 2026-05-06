@@ -73,7 +73,7 @@
 <div id="plants" class="grid"></div>
 
 <script>
-    fetch('/plants')
+    fetch('api/plants')
         .then(res => res.json())
         .then(plants => {
             const container = document.getElementById('plants');
@@ -104,7 +104,7 @@
                 card.appendChild(nickname);
 
                 card.onclick = () => {
-                    window.location.href = `/plant.html?id=${plant.id}`;
+                    window.location.href = `/plants/${plant.id}`;
                 };
 
                 container.appendChild(card);

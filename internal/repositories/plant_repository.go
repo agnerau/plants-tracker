@@ -26,9 +26,30 @@ func (r *PlantRepository) GetPlants() ([]internal.Plant, error) {
 
 	for rows.Next() {
 		var p internal.Plant
-		rows.Scan(&p.ID, &p.Name, &p.Nickname)
+		if err = rows.Scan(&p.ID, &p.Name, &p.Nickname); err != nil {
+			return nil, err
+		}
 		plants = append(plants, p)
 	}
 
 	return plants, nil
+}
+
+func (r *PlantRepository) GetPlant(plantID int) (internal.Plant, error) {
+	plant := internal.Plant{}
+	query := ("SELECT name, nickname, bought_at, planted_at, died_at FROM plants WHERE id = ?")
+	row := r.DB.QueryRow(query, plantID)
+	err := row.Scan(
+		&plant.Name,
+		&plant.Nickname,
+		&plant.BoughtAt,
+		&plant.PlantedAt,
+		&plant.DiedAt,
+	)
+
+	if err != nil {
+		return plant, err
+	}
+
+	return plant, nil
 }

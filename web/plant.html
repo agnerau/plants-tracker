@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Plant 🌱</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .plant-image {
+            width: 100%;
+            height: 220px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background: #ddd;
+        }
+
+        .plant-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .plant-nickname {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .info {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #2c7be5;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <a href="/" class="back">← Back</a>
+
+    <div id="plant"></div>
+</div>
+
+<script>
+    function getPlantId() {
+        const parts = window.location.pathname.split('/');
+        return parts[parts.length - 1];
+    }
+
+    const plantId = getPlantId();
+
+    if (!plantId) {
+        document.getElementById('plant').innerHTML =
+            '<p class="empty">No plant ID provided 😢</p>';
+    } else {
+        fetch(`/api/plants/${plantId}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Plant not found");
+                return res.json();
+            })
+            .then(plant => {
+                const container = document.getElementById('plant');
+
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const image = document.createElement('img');
+                image.className = 'plant-image';
+                image.src = 'https://i.pinimg.com/736x/ed/4b/c6/ed4bc632495505f318ae7b39bd815fe3.jpg';
+
+                const name = document.createElement('div');
+                name.className = 'plant-name';
+                name.textContent = plant.name;
+
+                const nickname = document.createElement('div');
+                nickname.className = 'plant-nickname';
+                nickname.textContent = plant.nickname || '';
+
+                const bought = document.createElement('div');
+                bought.className = 'info';
+                bought.innerHTML = `<span class="label">Bought at:</span> ${plant.bought_at || '-'}`;
+
+                const planted = document.createElement('div');
+                planted.className = 'info';
+                planted.innerHTML = `<span class="label">Planted at:</span> ${plant.planted_at || '-'}`;
+
+                const died = document.createElement('div');
+                died.className = 'info';
+                died.innerHTML = `<span class="label">Died at:</span> ${plant.died_at || 'Alive 🌿'}`;
+
+                card.appendChild(image);
+                card.appendChild(name);
+                card.appendChild(nickname);
+                card.appendChild(bought);
+                card.appendChild(planted);
+                card.appendChild(died);
+
+                container.appendChild(card);
+            })
+            .catch(err => {
+                document.getElementById('plant').innerHTML =
+                    '<p class="empty">Failed to load plant 😢</p>';
+                console.error(err);
+            });
+    }
+</script>
+
+</body>
+</html>
