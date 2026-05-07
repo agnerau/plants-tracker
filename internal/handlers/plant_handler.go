@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"goplants/internal"
 	"net/http"
 	"strconv"
@@ -9,7 +10,7 @@ import (
 )
 
 type PlantService interface {
-	GetPlants() ([]internal.Plant, error)
+	GetPlants(c context.Context) ([]internal.Plant, error)
 	GetPlant(plantID int) (internal.Plant, error)
 	CreatePlant(p *internal.Plant) error
 }
@@ -36,7 +37,7 @@ func (h *PlantHandler) CreatePlant(c *gin.Context) {
 }
 
 func (h *PlantHandler) GetPlants(c *gin.Context) {
-	plants, err := h.Service.GetPlants()
+	plants, err := h.Service.GetPlants(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

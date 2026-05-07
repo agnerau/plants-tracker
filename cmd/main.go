@@ -1,17 +1,22 @@
 package main
 
 import (
+	"context"
 	"goplants/internal/app"
 	"goplants/internal/db"
+	"goplants/internal/redis"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	database := db.InitDB()
+	ctx := context.Background()
 
-	plantHandler := app.InitPlantHandler(database)
-	heightHandler := app.InitHeightHandler(database)
+	database := db.InitDB()
+	rdb := redis.NewClient(ctx)
+
+	plantHandler := app.InitPlantHandler(database, rdb)
+	heightHandler := app.InitHeightHandler(database, rdb)
 
 	r := gin.Default()
 
