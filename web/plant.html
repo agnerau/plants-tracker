@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>Plant 🌱</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +15,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
@@ -63,6 +65,11 @@
         .empty {
             text-align: center;
             color: #888;
+            margin-top: 20px;
+        }
+
+        canvas {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -71,7 +78,6 @@
 
 <div class="container">
     <a href="/" class="back">← Back</a>
-
     <div id="plant"></div>
 </div>
 
@@ -122,14 +128,72 @@
                 died.className = 'info';
                 died.innerHTML = `<span class="label">Died at:</span> ${plant.died_at || 'Alive 🌿'}`;
 
+                const canvas = document.createElement('canvas');
+                canvas.id = 'chart';
+                canvas.height = 200;
+
                 card.appendChild(image);
                 card.appendChild(name);
                 card.appendChild(nickname);
                 card.appendChild(bought);
                 card.appendChild(planted);
                 card.appendChild(died);
+                card.appendChild(canvas);
 
                 container.appendChild(card);
+
+                return fetch(`/api/plants/${plantId}/heights`);
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    document.getElementById('chart').replaceWith(
+                        Object.assign(document.createElement('div'), {
+                            className: 'empty',
+                            textContent: 'No height data yet 🌱'
+                        })
+                    );
+                    return;
+                }
+
+                data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+                const labels = data.map(h =>
+                    new Date(h.created_at).toLocaleDateString()
+                );
+
+                const values = data.map(h => h.value);
+
+                const ctx = document.getElementById('chart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Height',
+                            data: values,
+                            borderColor: '#2c7be5',
+                            backgroundColor: 'rgba(44,123,229,0.2)',
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
             })
             .catch(err => {
                 document.getElementById('plant').innerHTML =
