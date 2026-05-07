@@ -44,7 +44,7 @@ func (h *HeightHandler) GetHeights(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "invalid plant id"})
 		return
 	}
-	heights, err := h.Service.GetHeights(plantID)
+	heights, err := h.Service.GetHeights(plantID, c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
