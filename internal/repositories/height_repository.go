@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"goplants/internal"
+	"time"
 )
 
 type HeightRepository struct {
@@ -27,7 +28,17 @@ func (r *HeightRepository) GetHeights(plantID int) ([]internal.Height, error) {
 
 	for rows.Next() {
 		h := internal.Height{PlantID: plantID}
-		rows.Scan(&h.ID, &h.Value, &h.CreatedAt)
+		var createdAtStr string
+
+		err = rows.Scan(&h.ID, &h.Value, &createdAtStr)
+		if err != nil {
+			return nil, err
+		}
+
+		h.CreatedAt, err = time.Parse("2006-01-02 15:04:05", createdAtStr)
+		if err != nil {
+			return nil, err
+		}
 		heights = append(heights, h)
 	}
 

@@ -5,13 +5,13 @@ CREATE TABLE plants (
                         bought_at DATE NULL,
                         planted_at DATE NULL,
                         died_at DATE NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
 );
 
 CREATE TABLE heights (
                          id INT AUTO_INCREMENT PRIMARY KEY,
                          value FLOAT NOT NULL,
-                         date DATE NOT NULL,
+                         created_at DDATETIME DEFAULT CURRENT_TIMESTAMP;,
                          plant_id INT NOT NULL,
                          FOREIGN KEY (plant_id) REFERENCES plants(id) ON DELETE CASCADE
 );
